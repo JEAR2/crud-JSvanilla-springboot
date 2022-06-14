@@ -18,9 +18,12 @@ btnCrear.addEventListener('click', ()=>{
     opcion = 'crear'
 })
 
+
 //funcion para mostrar los resultados
 const mostrar = (usuarios) => {
+    resultados = '';
     usuarios.forEach(usuario => {
+        
         resultados += `<tr>
                             <td>${usuario.id}</td>
                             <td>${usuario.nombre}</td>
@@ -35,10 +38,24 @@ const mostrar = (usuarios) => {
 }
 
 //Procedimiento Mostrar
-fetch(url)
+
+const getData = function(url){
+    fetch(url)
     .then( response => response.json() )
     .then( data => mostrar(data) )
     .catch( error => console.log(error))
+}
+getData(url)
+
+btnFind.addEventListener("click", () =>{
+    let findEmail = document.getElementById("findEmail").value || null;
+    if(findEmail!==null){
+        getData(url+`findEmail/${findEmail}`);
+    }else{
+        getData(url);
+    }
+   
+});
 
   
 const on = (element, event, selector, handler) => {
