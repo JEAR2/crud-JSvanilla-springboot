@@ -43,7 +43,18 @@ const mostrar = (usuarios) => {
 const getData = function(url){
     fetch(url)
     .then( response => response.json() )
-    .then( data => mostrar(data) )
+    .then(data => {
+        console.log(data)
+        if(data.length===0){
+            alertify.alert("El valor ingresado no existe como correo de usuario en la base de datos, Por favor ingrese el correo completo",()=>{
+                location.reload()
+            })
+            
+        }else{
+            mostrar(data);
+        }
+    })
+    //.then( data => mostrar(data) )
     .catch( error => console.log(error))
 }
 
@@ -106,10 +117,11 @@ on(document, 'click', '#btnDeleteEmail', e => {
         alertify.confirm(`Está seguro que sedes eliminar el usuario con correo ${email}`,
     function(){
         console.log(url+`deleteEmail/${email}`);
-        fetch(url+`deleteEmail/${email}`, {
+        let res = fetch(url+`deleteEmail/${email}`, {
             method: 'DELETE'
         })
-        .then( ()=> location.reload())
+        //.then(res =>{console.log(res)})
+       .then( ()=> location.reload())
         //alertify.success('Ok')
     },
     function(){
