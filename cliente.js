@@ -1,5 +1,5 @@
 //Definición de variables
-const url = 'http://localhost:8080/usuario/'
+const url = 'http://localhost:8082/usuario/'
 const contenedor = document.querySelector('tbody')
 let resultados = ''
 
@@ -8,6 +8,7 @@ const formUsuario = document.querySelector('form')
 const nombre = document.getElementById('nombre')
 const email = document.getElementById('email')
 const prioridad = document.getElementById('prioridad')
+const emailElement = document.getElementById('emailDelete')
 var opcion = ''
 
 btnCrear.addEventListener('click', ()=>{
@@ -45,6 +46,7 @@ const getData = function(url){
     .then( data => mostrar(data) )
     .catch( error => console.log(error))
 }
+
 getData(url)
 
 btnFind.addEventListener("click", () =>{
@@ -88,6 +90,36 @@ on(document, 'click', '.btnBorrar', e => {
     })
 })
 
+//Procedimiento Borrar por email
+on(document, 'click', '#btnDeleteEmail', e => {
+    
+    const email = document.getElementById('deleteEmail').value || null
+    const fila = e.target.parentNode.parentNode
+    const id = fila.firstElementChild.innerHTML
+    
+    if(email==null){
+        emailElement.insertAdjacentHTML("beforebegin",`<h6 style = color:red>Debe ingresar un valor</h6>`);
+        setTimeout(()=>{
+            location.reload();
+        },1500)
+    }else{
+        alertify.confirm(`Está seguro que sedes eliminar el usuario con correo ${email}`,
+    function(){
+        console.log(url+`deleteEmail/${email}`);
+        fetch(url+`deleteEmail/${email}`, {
+            method: 'DELETE'
+        })
+        .then( ()=> location.reload())
+        //alertify.success('Ok')
+    },
+    function(){
+        alertify.error('Cancel')
+    })
+    }
+    
+})
+
+
 //Procedimiento Editar
 let idForm = 0
 on(document, 'click', '.btnEditar', e => {    
@@ -124,7 +156,7 @@ formUsuario.addEventListener('submit', (e)=>{
         .then( data => {
             const nuevoUsuario = []
             nuevoUsuario.push(data)
-            mostrar(nuevoUsuario)
+            getData(url)
         })
     }
     if(opcion=='editar'){    
